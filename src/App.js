@@ -19,37 +19,34 @@ const estilo = {
 }
 //#####################################################
 
+function App() {
+
 
 //-x-x-x-x-x-x-x-QUESTÃO 1-x-x-x-x-x--x-x-x-x-x-x-x-x-
-  var carro = [
-    {cor:"preto",marca:"volkswagen",modelo:"fusca"},
-    {cor:"amarelo",marca:"volkswagen",modelo:"brasilia"},
-    {cor:"prata",marca:"mitsubishi",modelo:"lancer"},
-    {cor:"preto",marca:"honda",modelo:"HR-V"},
-    {cor:"amarelo",marca:"ford",modelo:"mustang"},
-    {cor:"prata",marca:"honda",modelo:"city"},
-    {cor:"vermelho",marca:"ford",modelo:"fiesta"}
+var carro = [
+  {cor:"preto",marca:"volkswagen",modelo:"fusca"},
+  {cor:"amarelo",marca:"volkswagen",modelo:"brasilia"},
+  {cor:"prata",marca:"mitsubishi",modelo:"lancer"},
+  {cor:"preto",marca:"honda",modelo:"HR-V"},
+  {cor:"amarelo",marca:"ford",modelo:"mustang"},
+  {cor:"prata",marca:"honda",modelo:"city"},
+  {cor:"vermelho",marca:"ford",modelo:"fiesta"}
 ]
 
-  //lê e devolve o vetor pro html (não sei como funciona exatamente kkkkk)
-  function leVetorQ1(carro){
-    return (
-      carro.map((elem) => <div>Modelo: {elem.modelo};  Marca: {elem.marca};  Cor: {elem.cor};</div>)
-    )
-  }
+//lê e devolve o vetor pro html (não sei como funciona exatamente kkkkk)
+function leVetorQ1(carro){
+  return (
+    carro.map((elem) => <div>Modelo: {elem.modelo};  Marca: {elem.marca};  Cor: {elem.cor};</div>)
+  )
+}
 
-  //filtra o vetor com base nos parametros da funcao filtramarca e imprime o vetor no html (tambem não sei como funciona exatamente)
-  
-  //---->>>> seria legal poder passar qual marca você quer filtrar quando chamar a funcão, 
-  //              aí ele comprar carro.marca com a marca que tu passou
-  //                        (deixar para o final, eu acho)
-  function filterVetorQ1(carro,){
-    
-    function filtramarca(carro,){
-      return(carro.marca === "volkswagen")
-    }  
-    
-    let carrofiltrado = carro.filter(filtramarca) //aparentemente, não funciona se tu passar parametros para a função dentro do filter
+
+  function filterVetorQ1(carro){
+    let carrofiltrado = carro.filter(
+      (carro)=>{
+        return(carro.marca === tipo)
+      }  
+    )
     
     return(
       carrofiltrado.map((elem) => <div>Modelo: {elem.modelo}; 
@@ -57,18 +54,41 @@ const estilo = {
     )
   }
 
-function App() {
-
   //X-X-X-X-X-X-X-X-X-QUESTÃO 2-X-X-X-X-X-X-X-X-X-X-X-X-X-X-X
   //cria peso e altura;
-
-  //IMC MOSTRA NA TELA MAS PÁGINA RECARREGA, NÃO SEI USAR ASYNC NESSE CASO
+  
   const [peso,setPeso] = useState(0)
   const [altura,setAltura] = useState(0)
   const [imc,setImc] = useState(0)
+  const [tipo,setTipo] = useState("")
+  const [estadoIMC,setEstadoIMC] = useState("Insira os dados acima...") //gera mensagem padrão do estado do imc
 
-  function calculaIMC(){
-    setImc((parseFloat(peso)/parseFloat(altura)*parseFloat(altura)))
+
+  function calculaIMC(){    
+    try{ //vefica se é possível executar a função
+      if(peso <= 0 || altura <= 0 ){
+        throw "Peso e altura não podem ser zero ou negativo"; //caso peso ou altura for <= 0, força uma exessão
+      } //o valor de Throw é a variável e dentro de catch
+      
+      setTimeout(() => {
+        setImc(parseFloat(peso)/(parseFloat(altura)*parseFloat(altura)))
+        setEstadoIMC("IMC Calculado!")
+      },5000)
+
+    } catch(e){
+      console.error(e)
+      alert(e)
+    }
+  }
+
+  function calculandoIMC(){
+    setEstadoIMC("Calculando o seu IMC...")
+  }
+
+  async function imcHandler(event){
+    event.preventDefault(); //FAZ COM QUE A PÁGINA NÃO RECARREGUE DEPOIS DO SUBMIT NO FORMS
+    await calculaIMC(); //executa o calculaIMC e calculandoIMC JUNTOS, mas o calculaIMC demora 5s para responder
+    await calculandoIMC(); 
   }
 
 
@@ -76,6 +96,8 @@ function App() {
 const [resultQ3,setResultQ3] = useState(0)
 const [img,setImg] = useState(0)
 
+
+//-X-X-X-X-X-X-X-X DADOS DO INDEX -X-X-X-X-X-X-X-X-X
     return (
     <body className="App" style={estilo.body}>
       <div>
@@ -84,7 +106,7 @@ const [img,setImg] = useState(0)
       </div>
       <div class="q1"> 
       < br/><br/>
-        <h1>Questão 1: (tentar fazer possível escolher qual marca deseja filtrar)</h1>
+        <h1>Questão 1: </h1>
         <p>
           vetor escolhido: <br/><br/>
           {leVetorQ1(carro)}
@@ -93,16 +115,25 @@ const [img,setImg] = useState(0)
           <br/>
           <br/>
           Vetor filtrado: <br/>
-          Apenas carros da volkswagen: <br/>
+          selecione a marca que deseja filtrar abaixo: <br/> 
+          <select name="marcas" onChange={(e)=>{
+            setTipo(e.target.value)
+          }}>
+              <option value="">Default</option>
+              <option value="volkswagen">volkswagen</option>
+              <option value="honda">honda</option>
+              <option value="ford">ford</option>
+              <option value="mitsubishi">mitsubishi</option>
+          </select> <br/>
           {filterVetorQ1(carro)}
           </p>
       </div>
 
       <div>
         <h1> <br/><br/><br/>
-          QUESTÃO 2 (calcula o IMC, mas recarrega a página na mesma hora):
+          QUESTÃO 2:
         </h1>
-        <form onSubmit={calculaIMC}>
+        <form onSubmit={imcHandler}>
           <table>
               <tr>
                 <td>
@@ -140,7 +171,10 @@ const [img,setImg] = useState(0)
                 <br/>
               </tr>
               <tr>
-                Seu IMC é: {imc}
+                Seu IMC é: {imc.toFixed(2)}
+              </tr>
+              <tr>
+                {estadoIMC}
               </tr>
           </table>
           </form>
