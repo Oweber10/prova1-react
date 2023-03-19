@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/prova1-react/static/css/main.12f4a718.css",
+    "main.js": "/prova1-react/static/js/main.7d153c0c.js",
+    "static/js/787.05f522f2.chunk.js": "/prova1-react/static/js/787.05f522f2.chunk.js",
+    "index.html": "/prova1-react/index.html",
+    "main.12f4a718.css.map": "/prova1-react/static/css/main.12f4a718.css.map",
+    "main.7d153c0c.js.map": "/prova1-react/static/js/main.7d153c0c.js.map",
+    "787.05f522f2.chunk.js.map": "/prova1-react/static/js/787.05f522f2.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.12f4a718.css",
+    "static/js/main.7d153c0c.js"
+  ]
+}
